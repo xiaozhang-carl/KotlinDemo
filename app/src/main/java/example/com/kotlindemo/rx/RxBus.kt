@@ -1,4 +1,4 @@
-package example.com.kotlindemo.event
+package example.com.kotlindemo.rx
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

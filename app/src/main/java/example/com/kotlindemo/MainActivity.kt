@@ -12,10 +12,10 @@ import com.xiaozhang.sr.RecyclerViewContract
 import com.xiaozhang.sr.SwipeRecyclerViewDelegate
 import example.com.kotlindemo.databinding.ContentMainBinding
 import example.com.kotlindemo.databinding.ItemUserBinding
-import example.com.kotlindemo.event.RxBus
+import example.com.kotlindemo.rx.RxBus
 import example.com.kotlindemo.net.Client.gitHubService
 import example.com.kotlindemo.net.HandleNetData
-import example.com.kotlindemo.net.rx
+import example.com.kotlindemo.rx.rx
 import io.reactivex.functions.Consumer
 
 

@@ -1,6 +1,10 @@
-package example.com.kotlindemo.net
+package example.com.kotlindemo.rx
 
+import android.databinding.Observable
 import android.databinding.ObservableField
+import example.com.kotlindemo.net.HandleNetData
+import example.com.kotlindemo.net.LoadingDialog
+import example.com.kotlindemo.net.ResultSubscriber
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.FlowableOnSubscribe
@@ -39,8 +43,8 @@ fun <T> rx(flowable: Flowable<T>,
 
 fun <T> toObservable(observableField: ObservableField<T>): ObservableSource<T> {
     return Flowable.create(FlowableOnSubscribe<T> { asyncEmitter ->
-        val callback = object : android.databinding.Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(dataBindingObservable: android.databinding.Observable, propertyId: Int) {
+        val callback = object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(dataBindingObservable: Observable, propertyId: Int) {
                 if (dataBindingObservable === observableField) {
                     asyncEmitter.onNext(observableField.get())
                 }
