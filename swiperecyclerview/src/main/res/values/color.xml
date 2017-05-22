@@ -1,0 +1,7 @@
+<resources>
+    <!-- app主色调 -->
+    <color name="color_1">#efab28</color>
+    <color name="color_2">#C5916F</color>
+    <color name="color_3">#2E2D2D</color>
+    <color name="color_4">#2E2D2D</color>
+</resources>
