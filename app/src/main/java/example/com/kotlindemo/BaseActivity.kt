@@ -14,11 +14,18 @@ import example.com.kotlindemo.databinding.ActivityBaseBinding
  */
 abstract class BaseActivity : AppCompatActivity() {
 
+    companion object {
+        lateinit var context: Context
+        lateinit var activity: Activity
+    }
+
     lateinit var mBaseBinding: ActivityBaseBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState);
-        mBaseBinding = DataBindingUtil.setContentView(this as Activity, R.layout.activity_base);
+        context = this as Context
+        activity = this as Activity
+        mBaseBinding = DataBindingUtil.setContentView(activity, R.layout.activity_base);
         mBaseBinding.setTitle(initTitle());
         mBaseBinding.contentView.addView(initContentView());
         mBaseBinding.toolbarBack.setOnClickListener({
@@ -37,9 +44,5 @@ abstract class BaseActivity : AppCompatActivity() {
     //子类activity实现ne内容页面
     abstract fun initContentView(): View
 
-
-    fun getContext(): Context {
-        return this as Context
-    }
 
 }

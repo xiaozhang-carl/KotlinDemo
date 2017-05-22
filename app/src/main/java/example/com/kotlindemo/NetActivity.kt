@@ -27,6 +27,6 @@ abstract class NetActivity: BaseActivity(), LoadingDialog{
 
     override fun onDestroy() {
         super.onDestroy()
-        mDisposales?.clear()
+        mDisposales.clear()
     }
 }

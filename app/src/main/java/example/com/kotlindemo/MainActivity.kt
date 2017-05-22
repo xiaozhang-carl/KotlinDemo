@@ -1,6 +1,5 @@
 package example.com.kotlindemo
 
-import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
@@ -12,9 +11,9 @@ import com.xiaozhang.sr.RecyclerViewContract
 import com.xiaozhang.sr.SwipeRecyclerViewDelegate
 import example.com.kotlindemo.databinding.ContentMainBinding
 import example.com.kotlindemo.databinding.ItemUserBinding
-import example.com.kotlindemo.rx.RxBus
 import example.com.kotlindemo.net.Client.gitHubService
 import example.com.kotlindemo.net.HandleNetData
+import example.com.kotlindemo.rx.RxBus
 import example.com.kotlindemo.rx.rx
 import io.reactivex.functions.Consumer
 
@@ -31,7 +30,7 @@ class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerVie
     }
 
     override fun initContentView(): View {
-        mBinding = DataBindingUtil.inflate(LayoutInflater.from(this as Context), R.layout.content_main, null, false)
+        mBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.content_main, null, false)
         return mBinding.root
     }
 
@@ -51,7 +50,7 @@ class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerVie
     private fun initEventBus() {
         RxBus.register(User::class.java, object : Consumer<User> {
             override fun accept(t: User?) {
-                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -88,7 +87,7 @@ class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerVie
     }
 
     override fun createView(parent: ViewGroup?, type: Int): ViewDataBinding {
-        return DataBindingUtil.inflate(LayoutInflater.from(this as Context), R.layout.item_user, null, false);
+        return DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_user, null, false);
     }
 
 }
