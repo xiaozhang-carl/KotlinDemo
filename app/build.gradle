@@ -38,6 +38,10 @@ kapt {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    /*下拉刷新列表*/
+    implementation project(':swiperecyclerview')
+
     // Kotlin
     kapt "com.android.databinding:compiler:$android_plugin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -56,9 +60,7 @@ dependencies {
     // Image Loading
     implementation rootProject.ext.glide
     implementation rootProject.ext.okhttp3integration
-    
-    /*下拉刷新列表*/
-    implementation project(':swiperecyclerview')
+
 
     /*OkHttp+Stetho+Chrome进行网络调试,发布的时候去掉4.*的系统会报错*/
     implementation 'com.facebook.stetho:stetho:1.5.0'
