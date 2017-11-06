@@ -1,4 +1,4 @@
-package example.com.kotlindemo
+package example.com.kotlindemo.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -8,7 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 /**
  * Created by zhanghongqiang on 2017/5/22.
  */
-abstract class NetActivity: BaseActivity(), LoadingDialog{
+abstract class NetActivity: AppActivity(), LoadingDialog{
 
     var mDisposales: CompositeDisposable
 

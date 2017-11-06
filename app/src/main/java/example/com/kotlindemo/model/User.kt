@@ -1,4 +1,4 @@
-package example.com.kotlindemo
+package example.com.kotlindemo.model
 
 /**
  * Created by zhanghongqiang on 2017/5/20.

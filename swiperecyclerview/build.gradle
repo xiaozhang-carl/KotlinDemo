@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile rootProject.ext.supportV4
-    compile rootProject.ext.recyclerview
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api rootProject.ext.supportV4
+    api rootProject.ext.recyclerview
 }

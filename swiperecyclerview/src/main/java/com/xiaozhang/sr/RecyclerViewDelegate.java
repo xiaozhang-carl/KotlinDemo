@@ -1,9 +1,7 @@
 package com.xiaozhang.sr;
 
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import java.util.List;
@@ -28,20 +26,30 @@ public class RecyclerViewDelegate<T> extends RecyclerViewContract.RVPresenter<T>
 
 
     public RecyclerViewDelegate recyclerView(RecyclerView recyclerView) {
-        this.mRecyclerView = recyclerView;
-        linearLayoutManager();
+        initLinearLayoutManager(recyclerView, LinearLayoutManager.VERTICAL);
         return this;
     }
 
-    public RecyclerViewDelegate recyclerView(RecyclerView recyclerView, EmptyViewLisenter lisenter) {
-        this.mRecyclerView = recyclerView;
-        linearLayoutManager();
+    public RecyclerViewDelegate recyclerViewHorizontal(RecyclerView recyclerView) {
+        initLinearLayoutManager(recyclerView, LinearLayoutManager.HORIZONTAL);
+        return this;
+    }
+
+    public RecyclerViewDelegate recyclerView(RecyclerView recyclerView, StateFulLisenter lisenter) {
+        initLinearLayoutManager(recyclerView, LinearLayoutManager.VERTICAL);
         initEmpty(lisenter);
         return this;
     }
 
-    private void initEmpty(EmptyViewLisenter lisenter) {
-        this.mEmptyViewLisenter = lisenter;
+    public RecyclerViewDelegate stateFulLisenter(StateFulLisenter lisenter) {
+        initEmpty(lisenter);
+        return this;
+    }
+
+
+
+    private void initEmpty(StateFulLisenter lisenter) {
+        this.mStateFulLisenter = lisenter;
     }
 
     /**
@@ -70,9 +78,8 @@ public class RecyclerViewDelegate<T> extends RecyclerViewContract.RVPresenter<T>
     /**
      * @param spanCount 网格布局的格数
      */
-    public RecyclerViewDelegate<T> recyclerView(RecyclerView recyclerView, int spanCount, EmptyViewLisenter lisenter) {
-        this.mRecyclerView = recyclerView;
-        gridLayoutManager(spanCount);
+    public RecyclerViewDelegate<T> recyclerView(RecyclerView recyclerView, int spanCount, StateFulLisenter lisenter) {
+        initGridLayoutManager(recyclerView,spanCount);
         initEmpty(lisenter);
         return this;
     }
@@ -81,8 +88,7 @@ public class RecyclerViewDelegate<T> extends RecyclerViewContract.RVPresenter<T>
      * @param spanCount 网格布局的格数
      */
     public RecyclerViewDelegate<T> recyclerView(RecyclerView recyclerView, int spanCount) {
-        this.mRecyclerView = recyclerView;
-        gridLayoutManager(spanCount);
+        initGridLayoutManager(recyclerView,spanCount);
         return this;
     }
 
@@ -93,42 +99,8 @@ public class RecyclerViewDelegate<T> extends RecyclerViewContract.RVPresenter<T>
      * @return
      */
     public RecyclerViewDelegate<T> recyclerView(RecyclerView recyclerView, int spanCount, int orientation) {
-        this.mRecyclerView = recyclerView;
-        staggeredGridLayoutManager(spanCount, orientation);
+        initStaggeredGridLayoutManager(recyclerView,spanCount,orientation);
         return this;
-    }
-
-
-    private void linearLayoutManager() {
-        //默认的layoutManager
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        //设置layoutManager
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-
-    /**
-     * ToDo:网格列表
-     *
-     * @param spanCount
-     */
-    private void gridLayoutManager(int spanCount) {
-        //GridLayoutManager
-        GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), spanCount);
-        //设置layoutManager
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-    /**
-     * ToDo:交错网格
-     *
-     * @param spanCount
-     */
-    private void staggeredGridLayoutManager(int spanCount, int orientation) {
-        // 交错网格布局管理器
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount, orientation);
-        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
     }
 
 
@@ -191,11 +163,11 @@ public class RecyclerViewDelegate<T> extends RecyclerViewContract.RVPresenter<T>
     }
 
     public void showEmptyView() {
-        if (mEmptyViewLisenter != null) {
+        if (mStateFulLisenter != null) {
             if (getDataList().size() == 0) {
-                mEmptyViewLisenter.showEmptyView();
+                mStateFulLisenter.showEmptyView();
             } else {
-                mEmptyViewLisenter.showContentView();
+                mStateFulLisenter.showContentView();
             }
         }
     }

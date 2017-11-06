@@ -6,7 +6,7 @@
 
         <variable
             name="user"
-            type="example.com.kotlindemo.User"/>
+            type="example.com.kotlindemo.model.User"/>
     </data>
 
     <RelativeLayout

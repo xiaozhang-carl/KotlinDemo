@@ -7,7 +7,13 @@ import example.com.kotlindemo.App
 /**
  * Created by zhanghongqiang on 2017/5/20.
  */
-class ResultSubscriber<T>(private val hND: HandleNetData<T>,private val lD: LoadingDialog, private val showToast: Boolean = true) : io.reactivex.subscribers.ResourceSubscriber<T>() {
+/**
+ *
+ */
+class ResultSubscriber<T>(private val hND: HandleNetData<T>
+                          , private val lD: LoadingDialog
+                          , private val showToast: Boolean = true)
+    : io.reactivex.subscribers.ResourceSubscriber<T>() {
 
     override fun onStart() {
         super.onStart()
@@ -30,7 +36,8 @@ class ResultSubscriber<T>(private val hND: HandleNetData<T>,private val lD: Load
     override fun onError(t: Throwable?) {
         lD.hideLoadingDialog()
         hND.onError(t)
-        if (showToast){
+        //显示网络失败
+        if (showToast) {
             Toast.makeText(App.getContext(), t.toString(), Toast.LENGTH_SHORT).show()
         }
     }

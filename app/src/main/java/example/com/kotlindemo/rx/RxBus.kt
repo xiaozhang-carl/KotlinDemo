@@ -15,7 +15,6 @@ import io.reactivex.subjects.Subject
  */
 object RxBus {
 
-
     // 主题
     private var bus: Subject<Any> = PublishSubject.create()
 

@@ -2,7 +2,10 @@ package com.xiaozhang.sr;
 
 import android.databinding.ViewDataBinding;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -53,7 +56,7 @@ public interface RecyclerViewContract {
         RecyclerViewContract.IFLoadData mLoadDataImp = null;
 
         //空布局的
-        EmptyViewLisenter mEmptyViewLisenter;
+        StateFulLisenter mStateFulLisenter;
 
         //列表RecyclerView头部
         View mHeaderView;
@@ -66,6 +69,9 @@ public interface RecyclerViewContract {
 
         //万用的适配器
         RVAdapter mAdapter;
+
+        //item分割线
+        RecyclerView.ItemDecoration mItemDecoration;
 
         //包装adpter的适配器
         HeaderViewRecyclerAdapter mHeaderViewRecyclerAdapter;
@@ -91,6 +97,49 @@ public interface RecyclerViewContract {
         public int indexOf(T t) {
             return getDataList().indexOf(t);
         }
+
+
+        protected void initLinearLayoutManager(RecyclerView recyclerView, int orientation) {
+            this.mRecyclerView = recyclerView;
+            //默认的layoutManager
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext());
+            layoutManager.setOrientation(orientation);
+            //设置layoutManager
+            mRecyclerView.setLayoutManager(layoutManager);
+
+        }
+
+
+        /**
+         * ToDo:网格列表
+         *
+         * @param spanCount
+         */
+        protected void initGridLayoutManager(RecyclerView recyclerView, int spanCount) {
+            this.mRecyclerView = recyclerView;
+            //GridLayoutManager
+            GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), spanCount);
+            //设置layoutManager
+            mRecyclerView.setLayoutManager(layoutManager);
+        }
+
+        /**
+         * ToDo:交错网格
+         *
+         * @param spanCount
+         */
+        protected void initStaggeredGridLayoutManager(RecyclerView recyclerView, int spanCount, int orientation) {
+            this.mRecyclerView = recyclerView;
+            // 交错网格布局管理器
+            StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(spanCount, orientation);
+            mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        }
+
+        protected void initItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
+            this.mItemDecoration = itemDecoration;
+            mRecyclerView.addItemDecoration(mItemDecoration);
+        }
+
 
         /**
          * 清空数据列表

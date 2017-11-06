@@ -16,11 +16,13 @@ import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by zhanghongqiang on 2017/5/22.
+ * ToDo：网络访问的包装
  */
 /**
- *@flowable
- *@nextListener
- *@dialogImp
+ *@flowable  网络接口
+ *@nextListener 传递数据
+ *@dialogImp  如果不传递的话，就重写实现方法
+ *@showToast  默认显示toast，
  */
 fun <T> rx(flowable: Flowable<T>,
            nextListener: HandleNetData<T>,

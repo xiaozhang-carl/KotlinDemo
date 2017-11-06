@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 
 /**
  * Created by yuyakaido on 2016/12/03.
+ * ToDo:自定义绑定者
  */
 object CustomBinder {
     @JvmStatic

@@ -1,24 +1,29 @@
-package example.com.kotlindemo
+package example.com.kotlindemo.ui
 
+import android.app.Activity
+import android.content.Context
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.xiaozhang.sr.RecyclerViewContract
 import com.xiaozhang.sr.SwipeRecyclerViewDelegate
+import example.com.kotlindemo.Extension.toast
+import example.com.kotlindemo.R
 import example.com.kotlindemo.databinding.ContentMainBinding
 import example.com.kotlindemo.databinding.ItemUserBinding
+import example.com.kotlindemo.model.User
 import example.com.kotlindemo.net.Client.gitHubService
 import example.com.kotlindemo.net.HandleNetData
 import example.com.kotlindemo.rx.RxBus
 import example.com.kotlindemo.rx.rx
 import io.reactivex.functions.Consumer
+import android.widget.Toast as t
 
 
-class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<User> {
+class MainActivity : StateFulActivity(), RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<User> {
 
 
     lateinit var mBinding: ContentMainBinding
@@ -26,11 +31,11 @@ class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerVie
     lateinit var mSwipeRecyclerViewDelegate: SwipeRecyclerViewDelegate<User>
 
     override fun initTitle(): String {
-        return "test"
+        return "测试一下"
     }
 
     override fun initContentView(): View {
-        mBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.content_main, null, false)
+        mBinding = DataBindingUtil.inflate(LayoutInflater.from(this as Activity), R.layout.content_main, null, false)
         return mBinding.root
     }
 
@@ -48,9 +53,12 @@ class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerVie
     }
 
     private fun initEventBus() {
+
         RxBus.register(User::class.java, object : Consumer<User> {
-            override fun accept(t: User?) {
-                Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show()
+            override fun accept(u: User?) {
+//                t.makeText(this@MainActivity as Context,u?.avatar_url, android.widget.Toast.LENGTH_SHORT).show()
+
+                toast(u?.avatar_url!!);
             }
         })
     }
@@ -87,7 +95,7 @@ class MainActivity : NetActivity(), RecyclerViewContract.IFLoadData, RecyclerVie
     }
 
     override fun createView(parent: ViewGroup?, type: Int): ViewDataBinding {
-        return DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.item_user, null, false);
+        return DataBindingUtil.inflate(LayoutInflater.from(this as Context), R.layout.item_user, null, false);
     }
 
 }

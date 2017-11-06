@@ -1,7 +1,6 @@
 package com.xiaozhang.sr;
 
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -31,6 +30,8 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
     private boolean mLoadingMoreEnabled = true;
     //RecyclerView的滚动监听
     private RecyclerViewScrollListener mScrollListener;
+    //加载分页，第一页之后的哪一个页面没有跟多数据
+    private boolean noMoreData = false;
 
     public SwipeRecyclerViewDelegate(RecyclerViewContract.IFLoadData loadData, RecyclerViewContract.IFAdapter adapter) {
         super(loadData, adapter);
@@ -52,8 +53,7 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
      */
     public SwipeRecyclerViewDelegate recyclerView(SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView) {
         this.mSwipeLayout = swipeRefreshLayout;
-        this.mRecyclerView = recyclerView;
-        initLinearLayoutManager();
+        initLinearLayoutManager(recyclerView, LinearLayoutManager.VERTICAL);
         return this;
     }
 
@@ -64,17 +64,16 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
      * @param recyclerView
      * @return
      */
-    public SwipeRecyclerViewDelegate recyclerView(SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView, EmptyViewLisenter lisenter) {
+    public SwipeRecyclerViewDelegate recyclerView(SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView, StateFulLisenter lisenter) {
         this.mSwipeLayout = swipeRefreshLayout;
-        this.mRecyclerView = recyclerView;
         initEmpty(lisenter);
-        initLinearLayoutManager();
+        initLinearLayoutManager(recyclerView, LinearLayoutManager.VERTICAL);
         return this;
     }
 
 
-    private void initEmpty(EmptyViewLisenter lisenter) {
-        this.mEmptyViewLisenter = lisenter;
+    private void initEmpty(StateFulLisenter lisenter) {
+        this.mStateFulLisenter = lisenter;
     }
 
     /**
@@ -87,8 +86,7 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
      */
     public SwipeRecyclerViewDelegate recyclerView(SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView, int spanCount) {
         this.mSwipeLayout = swipeRefreshLayout;
-        this.mRecyclerView = recyclerView;
-        initGridLayoutManager(spanCount);
+        initGridLayoutManager(recyclerView,spanCount);
         return this;
     }
 
@@ -100,28 +98,13 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
      * @param spanCount          网格布局的格数
      * @return
      */
-    public SwipeRecyclerViewDelegate recyclerView(SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView, int spanCount, EmptyViewLisenter lisenter) {
+    public SwipeRecyclerViewDelegate recyclerView(SwipeRefreshLayout swipeRefreshLayout, RecyclerView recyclerView, int spanCount, StateFulLisenter lisenter) {
         this.mSwipeLayout = swipeRefreshLayout;
-        this.mRecyclerView = recyclerView;
         initEmpty(lisenter);
-        initGridLayoutManager(spanCount);
+        initGridLayoutManager(recyclerView,spanCount);
         return this;
     }
 
-    private void initLinearLayoutManager() {
-        //列表布局管理器
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext(), LinearLayoutManager.VERTICAL, false);
-        //设置layoutManager
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-
-    private void initGridLayoutManager(int spanCount) {
-        //列表布局管理器
-        GridLayoutManager layoutManager = new GridLayoutManager(mRecyclerView.getContext(), spanCount);
-        //设置layoutManager
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
 
 
     /**
@@ -168,6 +151,13 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
         this.mLoadingMoreEnabled = loadingMore;
         return this;
     }
+
+    public SwipeRecyclerViewDelegate<T> stateFulLisenter(StateFulLisenter lisenter) {
+        initEmpty(lisenter);
+        return this;
+    }
+
+
 
     public SwipeRecyclerViewDelegate build() {
 
@@ -305,8 +295,9 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
         if (list == null) {
             return;
         }
+
         //下拉刷新,多次请求首页的话,清空数据
-        if (mPage == 1 || mPage <= 0) {
+        if (mPage == 1 || mPage == 0) {
             //首先清空原有数据
             clearData();
             if (list.size() != 0) {
@@ -324,13 +315,15 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
             } else {
                 mAdapter.addNewList(position + 1, list);
             }
-            refreshComplete();
         }
-        //空数据的话，把页码退回
+
+        //如果数据为0.把页码回置
         if (list.size() == 0) {
             mPage--;
         }
+
     }
+
 
     //网络连接失败的话需要调用，刷新完成，页码退回
     public void onError() {
@@ -339,7 +332,7 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
     }
 
     //刷新完成,隐藏进度条...
-    private void refreshComplete() {
+    public void refreshComplete() {
         //因为dialog显示的时间是500，所以这里延时显示
         mSwipeLayout.setRefreshing(false);
         //加载更多
@@ -352,8 +345,14 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
             mScrollListener.setLoading(bool);
             //加载更多的设置
             if (mLoadingView instanceof LoadingMoreView) {
+                //如果列表
                 LoadingMoreView loadingView = (LoadingMoreView) mLoadingView;
-                loadingView.setStatus(LoadingMoreView.STATUS_INIT);
+                if (noMoreData) {
+                    loadingView.setStatus(LoadingMoreView.STATUS_INIT);
+                } else {
+                    loadingView.setStatus(LoadingMoreView.STATUS_INIT);
+                }
+
             } else {
                 mLoadingView.setVisibility(View.INVISIBLE);
             }
@@ -362,8 +361,8 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
 
     @Override
     public void notifyDataSetChanged() {
-        if (mHeaderViewRecyclerAdapter != null) {
-            mHeaderViewRecyclerAdapter.notifyDataSetChanged();
+        if ( mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -378,11 +377,11 @@ public class SwipeRecyclerViewDelegate<T> extends RecyclerViewContract.RVPresent
     //查看列表数据
     @Override
     public void showEmptyView() {
-        if (mEmptyViewLisenter != null) {
+        if (mStateFulLisenter != null) {
             if (getDataList().size() == 0) {
-                mEmptyViewLisenter.showEmptyView();
+                mStateFulLisenter.showEmptyView();
             } else {
-                mEmptyViewLisenter.showContentView();
+                mStateFulLisenter.showContentView();
             }
         }
     }

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Created by zhanghongqiang on 2017/5/20.
+ * ToDo：网络服务
  */
 object Client{
 

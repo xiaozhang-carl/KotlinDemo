@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.xiaozhang.sr.R;
 
@@ -14,10 +15,11 @@ import com.xiaozhang.sr.R;
 public class LoadingMoreView extends LinearLayout {
 
     private SimpleViewSwitcher progressCon;
+    private AVLoadingIndicatorView progressView;
     public final static int STATUS_LOADING = 0;
     public final static int STATUS_INIT = 1;
     public final static int STATUS_NOMORE = 2;
-//    private TextView mText;
+    private TextView mText;
 
 
     public LoadingMoreView(Context context) {
@@ -45,20 +47,20 @@ public class LoadingMoreView extends LinearLayout {
         progressCon = new SimpleViewSwitcher(context);
         progressCon.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         //默认的加载动画
-        AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(context);
+        progressView = new AVLoadingIndicatorView(context);
         progressView.setIndicatorColor(context.getResources().getColor(R.color.color_1));
         progressView.setIndicatorId(ProgressStyle.BallSpinFadeLoader);
         progressCon.setView(progressView);
         addView(progressCon);
         //加载的字体
-//        mText = new TextView(getContext());
-//        mText.setText("正在加载...");
+        mText = new TextView(getContext());
+        mText.setText("正在加载...");
         //
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(16, 0, 0, 0);
 
-//        mText.setLayoutParams(layoutParams);
-//        addView(mText);
+        mText.setLayoutParams(layoutParams);
+        addView(mText);
 
         setStatus(STATUS_INIT);
     }
@@ -68,7 +70,7 @@ public class LoadingMoreView extends LinearLayout {
         if (style == ProgressStyle.SysProgress) {
             progressCon.setView(new ProgressBar(getContext(), null, android.R.attr.progressBarStyle));
         } else {
-            AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(this.getContext());
+            progressView = new AVLoadingIndicatorView(this.getContext());
             progressView.setIndicatorColor(color);
             progressView.setIndicatorId(style);
             progressCon.setView(progressView);
@@ -79,17 +81,19 @@ public class LoadingMoreView extends LinearLayout {
     public void setStatus(int status) {
         switch (status) {
             case STATUS_LOADING:
-                progressCon.setVisibility(View.VISIBLE);
 //                mText.setText(getContext().getText(R.string.listview_loading));
+                progressView.setVisibility(VISIBLE);
                 this.setVisibility(View.VISIBLE);
+
                 break;
             case STATUS_INIT:
 //                mText.setText(getContext().getText(R.string.listview_loading));
+                progressView.setVisibility(GONE);
                 this.setVisibility(View.GONE);
                 break;
             case STATUS_NOMORE:
 //                mText.setText(getContext().getText(R.string.nomore_loading));
-                progressCon.setVisibility(View.GONE);
+                progressView.setVisibility(VISIBLE);
                 this.setVisibility(View.VISIBLE);
                 break;
         }
