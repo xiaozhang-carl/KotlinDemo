@@ -60,7 +60,7 @@ open class App : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
-        if (null != mExistedActivitys && null != activity) {
+        if ( null != activity) {
             mExistedActivitys.remove(activity)
         }
     }
@@ -72,7 +72,7 @@ open class App : Application(), Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityCreated(activity: Activity?, p1: Bundle?) {
-        if (null != mExistedActivitys && null != activity) {
+        if (null != activity) {
             // 把新的 activity 添加到最前面，和系统的 activity 堆栈保持一致
             mExistedActivitys.add(activity)
         }

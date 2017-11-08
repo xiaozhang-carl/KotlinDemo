@@ -3,6 +3,7 @@ package example.com.kotlindemo
 import android.app.Activity
 import android.app.Fragment
 import android.content.Context
+import android.content.Intent
 import android.text.TextUtils
 import android.widget.Toast
 
@@ -27,5 +28,14 @@ object Extension {
         Toast.makeText(this as Context, message, duration).show()
     }
 
+
+    fun Activity.startActivity(cls: Class<*>) {
+        startActivity(Intent(this, cls))
+    }
+
+
+    fun Fragment.startActivity(cls: Class<*>) {
+        activity.startActivity(cls)
+    }
 
 }
