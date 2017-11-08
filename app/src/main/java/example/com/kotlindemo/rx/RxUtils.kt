@@ -2,6 +2,7 @@ package example.com.kotlindemo.rx
 
 import android.databinding.Observable
 import android.databinding.ObservableField
+import example.com.kotlindemo.net.Composers
 import example.com.kotlindemo.net.HandleNetData
 import example.com.kotlindemo.net.LoadingDialog
 import example.com.kotlindemo.net.ResultSubscriber
@@ -11,6 +12,7 @@ import io.reactivex.FlowableOnSubscribe
 import io.reactivex.ObservableSource
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 
 
@@ -34,12 +36,33 @@ fun <T> rx(flowable: Flowable<T>,
                }
            },
            showToast: Boolean = true): Disposable {
+
     return flowable
             .onBackpressureDrop()  //加上背压策略
             .subscribeOn(Schedulers.io())
             .unsubscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(ResultSubscriber(nextListener, dialogImp, showToast))
+}
+
+
+/**
+ *@flowable  网络接口
+ *@nextListener 传递数据
+ *@dialogImp  如果不传递的话，就重写实现方法
+ *@showToast  默认显示toast，
+ */
+fun <T> rx2(flowable: Flowable<T>,
+           onNext: Consumer<T>,
+           onError: Consumer<Throwable> = object : Consumer<Throwable> {
+               override fun accept(t: Throwable?) {
+
+               }
+
+           }): Disposable {
+
+    return flowable.compose(Composers.composeWithoutResponse())
+            .subscribe(onNext, onError)
 }
 
 

@@ -2,6 +2,7 @@ package example.com.kotlindemo.net
 
 import android.widget.Toast
 import example.com.kotlindemo.App
+import io.reactivex.subscribers.ResourceSubscriber
 
 
 /**
@@ -13,7 +14,7 @@ import example.com.kotlindemo.App
 class ResultSubscriber<T>(private val hND: HandleNetData<T>
                           , private val lD: LoadingDialog
                           , private val showToast: Boolean = true)
-    : io.reactivex.subscribers.ResourceSubscriber<T>() {
+    : ResourceSubscriber<T>() {
 
     override fun onStart() {
         super.onStart()
@@ -38,7 +39,7 @@ class ResultSubscriber<T>(private val hND: HandleNetData<T>
         hND.onError(t)
         //显示网络失败
         if (showToast) {
-            Toast.makeText(App.getContext(), t.toString(), Toast.LENGTH_SHORT).show()
+            Toast.makeText(App.instance, t.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -60,6 +60,7 @@ dependencies {
     // Image Loading
     implementation rootProject.ext.glide
     implementation rootProject.ext.okhttp3integration
+    annotationProcessor rootProject.ext.annotationProcessor
 
 
     /*OkHttp+Stetho+Chrome进行网络调试,发布的时候去掉4.*的系统会报错*/

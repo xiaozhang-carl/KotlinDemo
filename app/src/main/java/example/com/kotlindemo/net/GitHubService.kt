@@ -1,6 +1,7 @@
 package example.com.kotlindemo.net
 
 import example.com.kotlindemo.model.User
+import io.reactivex.Flowable
 import retrofit2.http.GET
 
 /**
@@ -9,5 +10,5 @@ import retrofit2.http.GET
  */
 interface GitHubService{
     @GET("/repos/enbandari/Kotlin-Tutorials/stargazers")
-    fun stargazers(): io.reactivex.Flowable<List<User>>
+    fun stargazers(): Flowable<List<User>>
 }

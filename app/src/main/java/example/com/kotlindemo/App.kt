@@ -15,26 +15,23 @@ import java.util.*
 open class App : Application(), Application.ActivityLifecycleCallbacks {
 
 
-    //管理activity的任务栈
+
 
 
     //伴生对象
     companion object {
 
-        private lateinit var app: Application
+        lateinit var instance: Context
 
+        //管理activity的任务栈
         private val mExistedActivitys = Stack<Activity>()
-
-        fun getContext(): Context {
-            return app
-        }
 
     }
 
 
     override fun onCreate() {
         super.onCreate()
-        app = this
+        instance = this
         debug()
     }
 

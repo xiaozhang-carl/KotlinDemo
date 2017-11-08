@@ -16,9 +16,8 @@ import example.com.kotlindemo.databinding.ContentMainBinding
 import example.com.kotlindemo.databinding.ItemUserBinding
 import example.com.kotlindemo.model.User
 import example.com.kotlindemo.net.Client.gitHubService
-import example.com.kotlindemo.net.HandleNetData
 import example.com.kotlindemo.rx.RxBus
-import example.com.kotlindemo.rx.rx
+import example.com.kotlindemo.rx.rx2
 import io.reactivex.functions.Consumer
 import android.widget.Toast as t
 
@@ -65,24 +64,48 @@ class MainActivity : StateFulActivity(), RecyclerViewContract.IFLoadData, Recycl
 
 
     override fun loadData() {
-        mDisposales.add(rx(gitHubService.stargazers(), object : HandleNetData<List<User>> {
+//        mDisposales.run {
+//            add(rx(gitHubService.stargazers(), object : HandleNetData<List<User>>() {
+//                override fun onNext(t: List<User>) {
+//                    mSwipeRecyclerViewDelegate.render(t)
+//                }
+//
+//                override fun misMatch(t: List<User>) {
+//                    mSwipeRecyclerViewDelegate.onError()
+//                }
+//
+//                override fun onError(t: Throwable?) {
+//                    mSwipeRecyclerViewDelegate.onError()
+//                }
+//            }))
+//
+//        }
 
-            override fun onNext(it: List<User>) {
-                mSwipeRecyclerViewDelegate.render(it)
+        mDisposales.run {
+            add(rx2(gitHubService.stargazers()
+                    , object : Consumer<List<User>> {
+                override fun accept(t: List<User>?) {
+                    mSwipeRecyclerViewDelegate.render(t)
+                    }
+                }
+                    , object : Consumer<Throwable> {
+                override fun accept(t: Throwable?) {
+                    mSwipeRecyclerViewDelegate.onError()
+                }
+            }))
+        }
 
-            }
 
-            override fun misMatch(t: List<User>) {
-                mSwipeRecyclerViewDelegate.onError()
-            }
-
-            override fun onError(t: Throwable?) {
-                mSwipeRecyclerViewDelegate.onError()
-            }
-
-        }))
-
+//        gitHubService
+//                .stargazers()
+//                .compose(Composers.composeWithoutResponse())
+//                .subscribe({
+//                    mSwipeRecyclerViewDelegate.render(it)
+//                },{
+//                    mSwipeRecyclerViewDelegate.onError()
+//                })
     }
+
 
     override fun updateView(data: User, binding: ViewDataBinding, position: Int) {
 

@@ -1,8 +1,9 @@
-package com.yuyakaido.android.flow.presentation.binder
+package example.com.kotlindemo.binder
 
 import android.databinding.BindingAdapter
 import android.widget.ImageView
 import example.com.kotlindemo.utils.ImageLoader.show
+
 
 /**
  * Created by yuyakaido on 2016/12/03.
