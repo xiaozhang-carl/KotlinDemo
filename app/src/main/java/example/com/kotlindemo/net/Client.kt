@@ -1,5 +1,6 @@
 package example.com.kotlindemo.net
 
+import android.text.TextUtils
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import example.com.kotlindemo.BuildConfig
@@ -17,8 +18,30 @@ import java.util.concurrent.TimeUnit
 object Client {
 
     val baseUrl = "https://api.github.com"
+    val dongDianUrl = "http://weixiaologin.dongdianyun.com:9001/"
 
     var gitHubService = getApi(baseUrl, GitHubService::class.java)
+    var dongDian = getApi(dongDianUrl, DongDianService::class.java,createInterceptor())
+
+    fun createInterceptor():Interceptor{
+        //OkHttp拦截器,用来添加头部信息
+        val mTokenInterceptor = Interceptor { chain ->
+            val originalRequest = chain.request()
+            //获取保存的token
+            val Cookie = "route=4833f206e3e2c507e3234e19e6aa302c; JSESSIONID=861152422341B4C382C6375F86AC85D7"
+            if (TextUtils.isEmpty(Cookie)) {
+                return@Interceptor chain.proceed(originalRequest)
+            }
+            //添加到头部
+            val newRequest = chain.request()
+                    .newBuilder()
+                    .header("Cookie", Cookie)
+                    .build()
+            chain.proceed(newRequest)
+        }
+
+        return mTokenInterceptor
+    }
 
     private var CONNECT_TIMEOUT_SECONDS = 20L
     private var READ_TIMEOUT_SECONDS = 20L

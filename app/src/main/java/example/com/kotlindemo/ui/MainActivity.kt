@@ -14,7 +14,9 @@ import example.com.kotlindemo.Extension.toast
 import example.com.kotlindemo.R
 import example.com.kotlindemo.databinding.ContentMainBinding
 import example.com.kotlindemo.databinding.ItemUserBinding
+import example.com.kotlindemo.model.ClassCircle
 import example.com.kotlindemo.model.User
+import example.com.kotlindemo.net.Client.dongDian
 import example.com.kotlindemo.net.Client.gitHubService
 import example.com.kotlindemo.rx.RxBus
 import example.com.kotlindemo.rx.rx2
@@ -94,6 +96,28 @@ class MainActivity : StateFulActivity(), RecyclerViewContract.IFLoadData, Recycl
                 }
             }))
         }
+
+        mDisposales.run {
+            mSwipeRecyclerViewDelegate.nextPage()
+
+            var start=mSwipeRecyclerViewDelegate.dataList.size;
+            var limit=10;
+            add(rx2(dongDian.microSchool(
+                    start,limit
+            )
+                    , object : Consumer<ClassCircle> {
+                override fun accept(t: ClassCircle?) {
+//                    mSwipeRecyclerViewDelegate.render(t)
+
+                }
+            }
+                    , object : Consumer<Throwable> {
+                override fun accept(t: Throwable?) {
+//                    mSwipeRecyclerViewDelegate.onError()
+                }
+            }))
+        }
+
 
 
 //        gitHubService
