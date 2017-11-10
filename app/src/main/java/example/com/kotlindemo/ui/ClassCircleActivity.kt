@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +13,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.google.gson.GsonBuilder
 import com.xiaozhang.sr.RecyclerViewContract
+import com.xiaozhang.sr.RecyclerViewScrollListener
 import com.xiaozhang.sr.SwipeRecyclerViewDelegate
 import example.com.kotlindemo.R
-import example.com.kotlindemo.databinding.ContentMainBinding
+import example.com.kotlindemo.databinding.ContentClassCircleBinding
 import example.com.kotlindemo.databinding.ItemPictureBinding
 import example.com.kotlindemo.databinding.ItemVideoBinding
 import example.com.kotlindemo.model.ClassCircle
 import example.com.kotlindemo.model.Content
 import example.com.kotlindemo.net.Client
+import example.com.kotlindemo.net.Client.dongDianUrl
 import example.com.kotlindemo.rx.rx2
 import example.com.kotlindemo.ui.photoview.ImageViewPagerActivity
 import example.com.kotlindemo.ui.photoview.ImageViewPagerActivity.Companion.EXTRA_KEY_INDEX
@@ -30,7 +33,7 @@ import io.reactivex.functions.Consumer
 class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapter<ClassCircle.ClassTalkRecords>, RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<ClassCircle.ClassTalkRecords> {
 
 
-    lateinit var mBinding: ContentMainBinding
+    lateinit var mBinding: ContentClassCircleBinding
 
     //Gson
     private var gson = GsonBuilder()
@@ -44,14 +47,24 @@ class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapt
     }
 
     override fun initContentView(): View {
-        mBinding = DataBindingUtil.inflate(LayoutInflater.from(this as Activity), R.layout.content_main, null, false)
+        mBinding = DataBindingUtil.inflate(LayoutInflater.from(this as Activity), R.layout.content_class_circle, null, false)
         return mBinding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mBinding.backToTop.setOnClickListener {
+            mBinding.recyclerView.scrollToPosition(0)
+        }
+
         mSwipeRecyclerViewDelegate = SwipeRecyclerViewDelegate.with(this, this)
                 .recyclerView(mBinding.swipeRefreshLayout, mBinding.recyclerView)
+                .setScrollListener(object : RecyclerViewScrollListener(mBinding.swipeRefreshLayout, this) {
+                    override fun onScrolled(firstVisibleItemPosition: Int, lastVisibleItemPosition: Int) {
+                        mBinding.backToTop.setVisibility(if (firstVisibleItemPosition == 0) View.GONE else View.VISIBLE)
+                    }
+                })
                 .build()
                 as SwipeRecyclerViewDelegate<ClassCircle.ClassTalkRecords>
 
@@ -122,9 +135,9 @@ class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapt
             images.add(binding.image8)
 
             //首先清空图片的点击事件
-            images.forEach{
-                it.visibility=View.INVISIBLE
-                it.setOnClickListener{
+            images.forEach {
+                it.visibility = View.INVISIBLE
+                it.setOnClickListener {
                 }
             }
 
@@ -132,11 +145,11 @@ class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapt
             content.pic_urls?.forEachIndexed { index, picUrls ->
 
                 //显示图片
-                images[index].visibility=View.VISIBLE
+                images[index].visibility = View.VISIBLE
                 ImageLoader.show(images[index], picUrls.thumbnail_pic as String)
                 //图片的点击事件
-                images[index].setOnClickListener{
-                    zoom(list,index)
+                images[index].setOnClickListener {
+                    zoom(list, index)
                 }
             }
 
@@ -157,6 +170,16 @@ class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapt
             var contentBinding = binding as ItemVideoBinding
             contentBinding.content = content
             contentBinding.teacher?.record = data
+
+            contentBinding.videoWeb.setOnClickListener {
+                //http://weixiaologin.dongdianyun.com:9001/MicroSchool/talkRecord_getTalkRecordUrl.action?talkRecordId=101175
+                var url = "${dongDianUrl}MicroSchool/talkRecord_getTalkRecordUrl.action?talkRecordId=${data.talkRecordId?.toString()}"
+                var intent: Intent = Intent()
+                intent.setAction(Intent.ACTION_VIEW);
+                var content_url: Uri = Uri.parse(url);
+                intent.setData(content_url);
+                startActivity(Intent.createChooser(intent, "请选择浏览器"));
+            }
         }
 
     }

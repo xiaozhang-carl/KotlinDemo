@@ -2,6 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+
+def getMyVersionCode() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHH')
+    return formattedDate
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -9,15 +16,60 @@ android {
         applicationId "example.com.kotlindemo"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode getMyVersionCode() as Integer
         versionName "1.0"
     }
-    buildTypes {
+    signingConfigs {
+        debug {
+            storeFile file('dongdian.jks')
+            storePassword "dongdian"
+            keyAlias "key0"
+            keyPassword "dongdian"
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            storeFile file('dongdian.jks')
+            storePassword "dongdian"
+            keyAlias "key0"
+            keyPassword "dongdian"
+            v1SigningEnabled true
+            v2SigningEnabled true
+
+        }
+
+
+    }
+
+    buildTypes {
+
+        buildTypes {
+
+            release {
+                shrinkResources false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                proguardFile 'proguard-glide.pro'
+                proguardFile 'proguard-gson.pro'
+                proguardFile 'proguard-picture-library.pro'
+                proguardFile 'proguard-retrofit.pro'
+                proguardFile 'proguard-rules.pro'
+                proguardFile 'proguard-rxjava.pro'
+                proguardFile 'proguard-ucrop.pro'
+                signingConfig signingConfigs.release
+                jniDebuggable false
+                minifyEnabled true
+            }
+            debug {
+                debuggable true
+                jniDebuggable false
+                proguardFiles 'proguard-rules.pro'
+                signingConfig signingConfigs.debug
+            }
         }
     }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
@@ -26,6 +78,13 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
+    }
+
+    /**自定义打包APK名称*/
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${variant.applicationId}-${variant.name}-${variant.versionName}.apk"
+        }
     }
    
 }

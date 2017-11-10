@@ -26,7 +26,7 @@ object ImageLoader {
      */
 
     fun show(imageView: ImageView, path: String) {
-        show(imageView, path, R.mipmap.ic_launcher)
+        show(imageView, path, R.mipmap.img_default_honghong)
 
     }
 

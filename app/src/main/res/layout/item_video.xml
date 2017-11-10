@@ -33,14 +33,29 @@
             tools:text="强国之本，重在教育。教育重在生活中体验。"/>
 
 
-        <ImageView
+        <FrameLayout
+            android:id="@+id/videoWeb"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="8dp"
-            android:scaleType="centerCrop"
-            app:imageUrl="@{content.video.thumbnail_pic}"/>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                app:imageUrl="@{content.video.thumbnail_pic}"
+                tools:src="@mipmap/img_default_honghong"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/video_play_btn"/>
+
+        </FrameLayout>
 
 
     </LinearLayout>

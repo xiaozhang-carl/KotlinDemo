@@ -47,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
 
             <example.com.kotlindemo.wedget.SquareImageView
                 android:id="@+id/image1"
@@ -55,7 +56,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
 
             <example.com.kotlindemo.wedget.SquareImageView
                 android:id="@+id/image2"
@@ -64,7 +66,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="16dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
         </LinearLayout>
 
         <LinearLayout
@@ -80,7 +83,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
 
             <example.com.kotlindemo.wedget.SquareImageView
                 android:id="@+id/image4"
@@ -88,7 +92,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
 
             <example.com.kotlindemo.wedget.SquareImageView
                 android:id="@+id/image5"
@@ -97,7 +102,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="16dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
         </LinearLayout>
 
         <LinearLayout
@@ -113,7 +119,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
 
             <example.com.kotlindemo.wedget.SquareImageView
                 android:id="@+id/image7"
@@ -121,7 +128,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
 
             <example.com.kotlindemo.wedget.SquareImageView
                 android:id="@+id/image8"
@@ -130,7 +138,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="16dp"
                 android:layout_weight="1"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@mipmap/img_default_honghong"/>
         </LinearLayout>
 
 
