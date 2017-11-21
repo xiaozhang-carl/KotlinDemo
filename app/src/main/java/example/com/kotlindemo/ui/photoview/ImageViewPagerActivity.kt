@@ -20,16 +20,19 @@ import java.util.*
  */
 class ImageViewPagerActivity : NetActivity() {
 
-    private var mBinding: ActivityImageViewpagerBinding? = null
+    private lateinit var mBinding: ActivityImageViewpagerBinding 
 
     //图片
-    private var urls: List<String>? = null
+    private lateinit var urls: List<String> 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //        QMUIStatusBarHelper.translucent(this); // 沉浸式状态栏
         //        QMUIStatusBarHelper.setStatusBarDarkMode(this);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_image_viewpager)
+        mBinding.toolbar.setOnClickListener{
+            finish()
+        }
         initViewPager()
     }
 
@@ -43,25 +46,26 @@ class ImageViewPagerActivity : NetActivity() {
             index = 0
         }
 
-        if (urls == null || urls!!.size == 0) {
+        if (urls == null || urls.size == 0) {
             return
         }
-        mBinding?.size?.text = urls?.size.toString()
+        mBinding.size.text = urls.size.toString()
+        mBinding.index.text = (index + 1).toString()
         val fragments = ArrayList<Fragment>()
-        for (url in urls!!) {
+        for (url in urls) {
             fragments.add(ImageZoomFragment.newInstance(url))
         }
-        mBinding!!.viewPager.adapter = ViewPagerAdapter(fragments, supportFragmentManager)
+        mBinding.viewPager.adapter = ViewPagerAdapter(fragments, supportFragmentManager)
         //设置缓存
-        mBinding!!.viewPager.offscreenPageLimit = urls!!.size
-        mBinding!!.viewPager.currentItem = index
-        mBinding!!.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        mBinding.viewPager.offscreenPageLimit = urls.size
+        mBinding.viewPager.currentItem = index
+        mBinding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
 
             }
 
             override fun onPageSelected(position: Int) {
-                mBinding?.index?.text = (position+1).toString()
+                mBinding.index.text = (position + 1).toString()
             }
 
             override fun onPageScrollStateChanged(state: Int) {

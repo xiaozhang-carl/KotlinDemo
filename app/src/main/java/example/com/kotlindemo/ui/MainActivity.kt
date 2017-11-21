@@ -18,7 +18,9 @@ import example.com.kotlindemo.model.ClassCircle
 import example.com.kotlindemo.model.User
 import example.com.kotlindemo.net.Client.dongDian
 import example.com.kotlindemo.net.Client.gitHubService
+import example.com.kotlindemo.net.HandleNetData
 import example.com.kotlindemo.rx.RxBus
+import example.com.kotlindemo.rx.rx
 import example.com.kotlindemo.rx.rx2
 import io.reactivex.functions.Consumer
 import android.widget.Toast as t
@@ -66,22 +68,21 @@ class MainActivity : StateFulActivity(), RecyclerViewContract.IFLoadData, Recycl
 
 
     override fun loadData() {
-//        mDisposales.run {
-//            add(rx(gitHubService.stargazers(), object : HandleNetData<List<User>>() {
-//                override fun onNext(t: List<User>) {
-//                    mSwipeRecyclerViewDelegate.render(t)
-//                }
-//
-//                override fun misMatch(t: List<User>) {
-//                    mSwipeRecyclerViewDelegate.onError()
-//                }
-//
-//                override fun onError(t: Throwable?) {
-//                    mSwipeRecyclerViewDelegate.onError()
-//                }
-//            }))
-//
-//        }
+        mDisposales.run {
+            add(rx(gitHubService.stargazers(), object : HandleNetData<List<User>>() {
+                override fun onRight(t: List<User>) {
+                    mSwipeRecyclerViewDelegate.render(t)
+                }
+                override fun onWrong(t: List<User>) {
+                    mSwipeRecyclerViewDelegate.onError()
+                }
+
+                override fun onException(t: Throwable?) {
+                    mSwipeRecyclerViewDelegate.onError()
+                }
+            }))
+
+        }
 
         mDisposales.run {
             add(rx2(gitHubService.stargazers()

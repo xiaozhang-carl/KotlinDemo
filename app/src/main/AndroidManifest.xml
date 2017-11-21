@@ -27,7 +27,8 @@
         <activity
             android:name=".ui.photoview.ImageViewPagerActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/imageTheme"/>
     </application>
 
 </manifest>

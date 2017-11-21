@@ -7,6 +7,8 @@ import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,20 +17,27 @@ import com.google.gson.GsonBuilder
 import com.xiaozhang.sr.RecyclerViewContract
 import com.xiaozhang.sr.RecyclerViewScrollListener
 import com.xiaozhang.sr.SwipeRecyclerViewDelegate
+import example.com.kotlindemo.App
 import example.com.kotlindemo.R
 import example.com.kotlindemo.databinding.ContentClassCircleBinding
 import example.com.kotlindemo.databinding.ItemPictureBinding
 import example.com.kotlindemo.databinding.ItemVideoBinding
 import example.com.kotlindemo.model.ClassCircle
 import example.com.kotlindemo.model.Content
+import example.com.kotlindemo.model.LogIn
 import example.com.kotlindemo.net.Client
 import example.com.kotlindemo.net.Client.dongDianUrl
-import example.com.kotlindemo.rx.rx2
+import example.com.kotlindemo.net.HandleNetData
+import example.com.kotlindemo.net.Response
+import example.com.kotlindemo.rx.rx
 import example.com.kotlindemo.ui.photoview.ImageViewPagerActivity
 import example.com.kotlindemo.ui.photoview.ImageViewPagerActivity.Companion.EXTRA_KEY_INDEX
 import example.com.kotlindemo.ui.photoview.ImageViewPagerActivity.Companion.EXTRA_KEY_URLS
 import example.com.kotlindemo.utils.ImageLoader
-import io.reactivex.functions.Consumer
+import example.com.kotlindemo.utils.PreferencesUtil
+import retrofit2.Call
+import retrofit2.Callback
+
 
 class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapter<ClassCircle.ClassTalkRecords>, RecyclerViewContract.IFLoadData, RecyclerViewContract.IFAdapter<ClassCircle.ClassTalkRecords> {
 
@@ -84,20 +93,64 @@ class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapt
             if (mSwipeRecyclerViewDelegate.page < 2) {
                 start = 0
             }
-            add(rx2(Client.dongDian.microSchool(
+            add(rx(Client.dongDian.microSchool(
                     start, limit
             )
-                    , object : Consumer<ClassCircle> {
-                override fun accept(t: ClassCircle?) {
-                    mSwipeRecyclerViewDelegate.render(t?.classTalkRecords)
+                    , object : HandleNetData<ClassCircle>() {
+                override fun onRight(circle: ClassCircle) {
+                    mSwipeRecyclerViewDelegate.render(circle?.classTalkRecords)
                 }
-            }
-                    , object : Consumer<Throwable> {
-                override fun accept(t: Throwable?) {
+
+                //                {"status": -500,"msg": "no login"}
+                override fun onWrong(t: ClassCircle) {
+                    mSwipeRecyclerViewDelegate.onError()
+                    //重新登录
+                    login()
+                }
+
+                override fun onException(t: Throwable?) {
                     mSwipeRecyclerViewDelegate.onError()
                 }
             }))
+
         }
+    }
+
+    fun login() {
+
+        val call = Client.dongDian.login("3D6566B9559F21D8F5FDA3B69353557F", 1, "15986302511", "E10ADC3949BA59ABBE56E057F20F883E")
+        val call2 = call.clone()
+        call2.enqueue(object : Callback<Response<LogIn>> {
+            override fun onFailure(call: Call<Response<LogIn>>?, t: Throwable?) {
+            }
+
+            override fun onResponse(call: Call<Response<LogIn>>?, response: retrofit2.Response<Response<LogIn>>?) {
+                Log.i("123", response?.headers()?.names().toString())
+                var list = response?.headers()?.values("Set-Cookie")
+                if (list?.size == 2) {
+                    var cookie: String = split(list[0])+";"+ split(list[1])
+                    if (cookie.contains("route") && cookie.contains("JSESSIONID")) {
+                        PreferencesUtil.getInstance(App.instance).putString("Set-Cookie", cookie )
+                        mSwipeRecyclerViewDelegate.reLoadData()
+                    }
+                }
+            }
+
+        })
+
+    }
+
+    /*
+* ToDo:用户的cookie截取,
+* */
+    fun split(cookieString: String): String {
+        var cookieString = cookieString
+        if (!TextUtils.isEmpty(cookieString)) {
+            val splitCookie = cookieString.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            cookieString = splitCookie.get(0)
+            return cookieString
+        }
+        return ""
     }
 
     override fun getItemViewType(position: Int): Int {

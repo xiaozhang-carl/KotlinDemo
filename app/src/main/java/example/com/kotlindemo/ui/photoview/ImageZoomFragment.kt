@@ -29,14 +29,14 @@ import uk.co.senab.photoview.PhotoViewAttacher
 class ImageZoomFragment : Fragment() {
 
 
-    private var imageUrl: String? = null
+    private lateinit var imageUrl: String
 
-    private var imageView: ImageView? = null
+    private lateinit var imageView: ImageView
 
-    private var mAttacher: PhotoViewAttacher? = null
+    private lateinit var mAttacher: PhotoViewAttacher
 
     //5.0以上的动画
-    private var animator: Animator? = null
+    private lateinit var animator: Animator
 
 
     override fun onAttach(context: Context?) {
@@ -54,12 +54,12 @@ class ImageZoomFragment : Fragment() {
             return view
         }
         //如果用  binding.setUrl(imageUrl); 图片的android:scaleType="centerCrop" 不会起作用
-        if (imageUrl!!.startsWith("htt")) {
+        if (imageUrl.startsWith("htt")) {
             //得到的图片链接为空的话
-            Flowable.just(imageUrl!!)
+            Flowable.just(imageUrl)
                     .map { s ->
                         //获取资源bitmap
-                        Glide.with(imageView!!.context).asBitmap().load(s).submit().get()
+                        Glide.with(imageView.context).asBitmap().load(s).submit().get()
                     }
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
@@ -67,8 +67,8 @@ class ImageZoomFragment : Fragment() {
                     .subscribeWith(object : DefaultSubscriber<Bitmap>() {
                         override fun onNext(bitmap: Bitmap?) {
                             if (bitmap != null) {
-                                imageView!!.setImageBitmap(bitmap)
-                                mAttacher = PhotoViewAttacher(imageView!!)
+                                imageView.setImageBitmap(bitmap)
+                                mAttacher = PhotoViewAttacher(imageView)
                             }
                         }
 
@@ -109,9 +109,9 @@ class ImageZoomFragment : Fragment() {
                 if (Build.VERSION.SDK_INT > 21) {
                     animator = ViewAnimationUtils.createCircularReveal(layoutView, cx, cy, startX, startY)
                     //在动画开始的地方速率改变比较慢,然后开始加速
-                    animator!!.interpolator = AccelerateInterpolator()
-                    animator!!.duration = 600
-                    animator!!.start()
+                    animator.interpolator = AccelerateInterpolator()
+                    animator.duration = 600
+                    animator.start()
                 }
             }
         }
@@ -119,8 +119,8 @@ class ImageZoomFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (animator != null) {
-            animator!!.cancel()
+        if (Build.VERSION.SDK_INT > 21) {
+            animator.cancel()
         }
 
     }

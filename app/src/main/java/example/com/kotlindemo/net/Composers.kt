@@ -5,6 +5,7 @@ import android.widget.Toast
 import example.com.kotlindemo.App
 import example.com.kotlindemo.exception.ApiException
 import example.com.kotlindemo.exception.ExceptionFactory
+import example.com.kotlindemo.model.ClassCircle
 import io.reactivex.Flowable
 import io.reactivex.FlowableTransformer
 import io.reactivex.ObservableTransformer
@@ -18,6 +19,7 @@ object Composers {
 
     /**
      * 普通的 ResponseBody 格式(非json), 处理 404 等 errorCode
+     * {"status": -500,"msg": "no login"}
      */
     fun <T> composeWithoutResponse(): FlowableTransformer<T, T> {
         return FlowableTransformer { observable ->
@@ -30,6 +32,13 @@ object Composers {
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doAfterNext {
+                        if (it is ClassCircle){
+                            if(it.status==-500){
+                                Toast.makeText(App.instance, "登录已失效，请重新登录", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
                     .doOnError { e: Throwable ->
                         Log.e(TAG, e.toString())
                         (e as? ApiException)?.apply {

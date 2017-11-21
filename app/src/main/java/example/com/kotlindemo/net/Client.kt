@@ -3,7 +3,9 @@ package example.com.kotlindemo.net
 import android.text.TextUtils
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import example.com.kotlindemo.App
 import example.com.kotlindemo.BuildConfig
+import example.com.kotlindemo.utils.PreferencesUtil
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -28,7 +30,7 @@ object Client {
         val mTokenInterceptor = Interceptor { chain ->
             val originalRequest = chain.request()
             //获取保存的token
-            val Cookie = "route=4833f206e3e2c507e3234e19e6aa302c; JSESSIONID=861152422341B4C382C6375F86AC85D7"
+            val Cookie = PreferencesUtil.getInstance(App.instance).getString("Set-Cookie")
             if (TextUtils.isEmpty(Cookie)) {
                 return@Interceptor chain.proceed(originalRequest)
             }
