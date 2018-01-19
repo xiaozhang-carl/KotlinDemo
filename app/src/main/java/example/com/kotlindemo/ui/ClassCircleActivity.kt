@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -227,18 +226,26 @@ class ClassCircleActivity : StateFulActivity(), RecyclerViewContract.IFTypeAdapt
             contentBinding.videoWeb.setOnClickListener {
                 //http://weixiaologin.dongdianyun.com:9001/MicroSchool/talkRecord_getTalkRecordUrl.action?talkRecordId=101175
                 var url = "${dongDianUrl}MicroSchool/talkRecord_getTalkRecordUrl.action?talkRecordId=${data.talkRecordId?.toString()}"
-                var intent: Intent = Intent()
-                intent.setAction(Intent.ACTION_VIEW);
-                var content_url: Uri = Uri.parse(url);
-                intent.setData(content_url);
-                startActivity(Intent.createChooser(intent, "请选择浏览器"));
+                videoPlay(url)
+//                var intent: Intent = Intent()
+//                intent.setAction(Intent.ACTION_VIEW);
+//                var content_url: Uri = Uri.parse(url);
+//                intent.setData(content_url);
+//                startActivity(Intent.createChooser(intent, "请选择浏览器"));
             }
         }
 
     }
 
+    fun videoPlay(url:String){
+        var intent: Intent = Intent(this,VideoActivity::class.java)
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra("url",url);
+        startActivity(intent);
+    }
+
     fun zoom(list: ArrayList<String>, index: Int) {
-        val intent: Intent = Intent(this, ImageViewPagerActivity::class.java)
+        val intent = Intent(this, ImageViewPagerActivity::class.java)
         intent.putStringArrayListExtra(EXTRA_KEY_URLS, list)
         intent.putExtra(EXTRA_KEY_INDEX, index)
         startActivity(intent)

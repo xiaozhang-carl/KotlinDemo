@@ -96,37 +96,28 @@ kapt {
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     /*下拉刷新列表*/
     implementation project(':swiperecyclerview')
-
     // Kotlin
     kapt "com.android.databinding:compiler:$android_plugin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
     implementation rootProject.ext.supportV7
     implementation rootProject.ext.constraintlayout
-
     // Networking
     implementation rootProject.ext.rxjava
     implementation rootProject.ext.rxandroid
     implementation rootProject.ext.retrofit
     implementation rootProject.ext.convertergson
     implementation rootProject.ext.adapterrxjava
-
     // Image Loading
     implementation rootProject.ext.glide
     implementation rootProject.ext.okhttp3integration
     implementation 'com.github.chrisbanes.photoview:library:1.2.4'
     annotationProcessor rootProject.ext.annotationProcessor
-
-
-
     /*OkHttp+Stetho+Chrome进行网络调试,发布的时候去掉4.*的系统会报错*/
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-
-
+    implementation files('libs/tbs_sdk_thirdapp_v3.1.0.1034_43100_sharewithdownload_obfs_20170301_182143.jar')
 }
