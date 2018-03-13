@@ -16,7 +16,6 @@ import java.util.*
  */
 open class App : Application(), Application.ActivityLifecycleCallbacks {
 
-
     //伴生对象
     companion object {
 
